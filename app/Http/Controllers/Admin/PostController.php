@@ -8,6 +8,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 use RealRashid\SweetAlert\Facades\Alert;
 class PostController extends Controller
 {
@@ -38,28 +39,30 @@ class PostController extends Controller
     public function store(Request $request)
     {
           $request->validate([
-            'title' => 'required',
-            'category_id' => 'required',
+            'title' => 'required|unique:posts|max:255',
+            'sub_title' => 'required',
             'description' => 'required',
+            'category_id' => 'required',
             'thumbnail' => 'required',
         ]);
+
         $data = [
             'title' => $request->title,
             'slug' => Str::slug($request->title),
-            'category_id' => $request->category_id,
+            'sub_title' => $request->sub_title,
             'description' => $request->description,
+            'category_id' => $request->category_id,
             'status' => $request->status,
         ];
-        if($request->hasFile('thumbnail')){
-            $file = $request->file('thumbnail');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' .$extension;
-            $file->move(public_path('images/post/'),$filename);
-            $data['thumbnail'] = $filename;
-        }
-        Post::create($data);
-        Alert::success("Post Created Successfully");
-        return redirect()->back();
+        $image = $request->file('thumbnail');
+        $filename = time().'.'.$image->getClientOriginalExtension();
+        $image_resize = Image::make($image->getRealPath());
+        $image_resize->resize(600,360);
+        $image_resize->save(public_path('/images/post/'.$filename));      
+        $data['thumbnail'] = $filename;
+    Post::create($data);
+    Alert::success("Post Created Successfully");
+    return redirect()->back();
     }
 
     /**
@@ -81,34 +84,33 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+     public function update(Request $request, string $id)
     {
-        $request->validate([
-            'title' => 'required',
-            'category_id' => 'required',
+          $request->validate([
+            'title' => 'required|unique:posts|max:255',
+            'sub_title' => 'required',
             'description' => 'required',
+            'category_id' => 'required',
+            'thumbnail' => 'required',
         ]);
+
         $data = [
             'title' => $request->title,
             'slug' => Str::slug($request->title),
-            'category_id' => $request->category_id,
+            'sub_title' => $request->sub_title,
             'description' => $request->description,
+            'category_id' => $request->category_id,
             'status' => $request->status,
         ];
-        if($request->hasFile('thumbnail')){
-            if($request->old_thumbnail){
-                
-                File::delete(public_path('images/post/'.$request->old_thumbnail));
-            }
-            $file = $request->file('thumbnail');
-            $extension = $file->getClientOriginalExtension();
-            $filename = time() . '.' .$extension;
-            $file->move(public_path('images/post/'),$filename);
-            $data['thumbnail'] = $filename;
-        }
-        Post::where('id',$id)->update($data);
-        Alert::success("Post Updated Successfully");
-        return redirect()->back();
+        $image = $request->file('thumbnail');
+        $filename = time().'.'.$image->getClientOriginalExtension();
+        $image_resize = Image::make($image->getRealPath());
+        $image_resize->resize(600,360);
+        $image_resize->save(public_path('/images/post/'.$filename));      
+        $data['thumbnail'] = $filename;
+    Post::where('id',$id)->update($data);
+    Alert::success("Post Update Successfully");
+    return redirect()->back();
     }
 
     /**

@@ -23,6 +23,14 @@
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
+                     <div class="form-group">
+                        <label for="">Sub Title</label>
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" name="sub_title"
+                            value="{{ $post->sub_title }}">
+                        @error('sub_title')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <div class="form-group">
                             <label for="">Post Category</label>
                             <select name="category_id" id="" class="form-control" >
@@ -47,7 +55,7 @@
                 <div class="form-group">
                     <label for="">Post Thumbnail</label>
                     <input type="hidden" name='old_thumbnail' value={{ $post->thumbnail }}>
-                    <input type="file" class="dropify form-control" name="thumbnail" required>
+                    <input type="file" class="dropify form-control" name="thumbnail">
                 </div>
                 <div class="form-check">
                     <label for="status" class="form-check-label">

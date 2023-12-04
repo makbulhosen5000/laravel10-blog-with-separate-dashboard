@@ -20,6 +20,7 @@
                         <tr>
                             <th>Title</th>
                             <th>Slug</th>
+                            <th>Sub-Total</th>
                             <th>Category</th>
                             <th>Description</th>
                             <th>Thumbnail</th>
@@ -31,6 +32,7 @@
                             <tr>
                                 <td>{{ $post->title }}</td>
                                 <td>{{ $post->slug }}</td>
+                                <td>{{ $post->sub_title }}</td>
                                 <td>{{ $post->category->name }}</td>
                                 <td>{{ $post->description }}</td>
                                 <td><img src="{{asset('images/post/'.$post->thumbnail) }}" width="100" height="100" alt=""></td>

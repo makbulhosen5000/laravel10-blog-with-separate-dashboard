@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,9 +18,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', [UserController::class, 'index']);
+Route::get('/single-post-view/{id}', [UserController::class, 'singlePostView'])->name('single.post.view');
+Route::get('/filter-by-category/{id}', [UserController::class, 'filterByCategory'])->name('filter.by.category');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
